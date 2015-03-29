@@ -2,6 +2,7 @@
 
 import six
 import copy
+import pudb
 
 from .field import Field
 
@@ -26,7 +27,7 @@ class Model(object):
             self.serialize_key(key): value.serialize(self)
             for key, value in six.iteritems(self._fields)
         }
-        
+
     def unserialize(self, kwargs):
         for key, value in six.iteritems(kwargs):
             key = self.unserialize_key(key)

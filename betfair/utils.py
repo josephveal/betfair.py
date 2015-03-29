@@ -4,6 +4,7 @@ import six
 import decorator
 import inflection
 import collections
+import json
 from six.moves import http_client as httplib
 
 from . import exceptions
@@ -120,7 +121,8 @@ def requires_login(func, *args, **kwargs):
     if instance variable `session_token` is absent.
 
     """
+    return func(*args, **kwargs)
     self = args[0]
-    if self.session_token:
+    if self.network_client.logged_in():
         return func(*args, **kwargs)
     raise exceptions.BetfairError('Not logged in')

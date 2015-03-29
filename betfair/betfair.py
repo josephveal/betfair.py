@@ -10,6 +10,8 @@ from six.moves import urllib_parse as urllib
 from . import utils
 from . import models
 from . import exceptions
+from constants import *
+from network import Network
 
 
 IDENTITY_URL = 'https://identitysso.betfair.com/api/'
@@ -25,12 +27,14 @@ class Betfair(object):
     :param str content_type: Response type
 
     """
-    def __init__(self, app_key, cert_file, content_type='application/json'):
+    def __init__(self, app_key, cert_file, exchange, content_type='application/json'):
         self.app_key = app_key
         self.cert_file = cert_file
+        self.exchange = exchange
         self.content_type = content_type
         self.session = requests.Session()
         self.session_token = None
+        self.network_client = Network(app_key)
 
     @property
     def headers(self):
@@ -72,23 +76,7 @@ class Betfair(object):
         :raises: BetfairLoginError
 
         """
-        response = self.session.post(
-            os.path.join(IDENTITY_URL, 'certlogin'),
-            cert=self.cert_file,
-            data=urllib.urlencode({
-                'username': username,
-                'password': password,
-            }),
-            headers={
-                'X-Application': self.app_key,
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-        )
-        utils.check_status_code(response, [httplib.OK])
-        data = response.json()
-        if data.get('loginStatus') != 'SUCCESS':
-            raise exceptions.BetfairLoginError(response, data)
-        self.session_token = data['sessionToken']
+        self.session_token = self.network_client.login(username, password)
 
     @utils.requires_login
     def keep_alive(self):
@@ -112,32 +100,35 @@ class Betfair(object):
     # Bet query methods
 
     @utils.requires_login
-    def list_event_types(self, filter, locale=None):
+    def list_event_types(self, filter={}, locale=None):
         """
 
         :param MarketFilter filter:
         :param str locale:
 
         """
-        return self.make_api_request(
-            'listEventTypes',
-            utils.get_kwargs(locals()),
-            model=models.EventTypeResult,
-        )
+        result = self.network_client.invoke_sync(
+            self.exchange,
+            Endpoint.Betting,
+            LIST_EVENT_TYPES,
+            utils.get_kwargs(locals()))
+        return utils.process_result(result, models.EventTypeResult)
 
     @utils.requires_login
-    def list_competitions(self, filter, locale=None):
+    def list_competitions(self, filter={}, locale=None):
         """
 
         :param MarketFilter filter:
         :param str locale:
 
         """
-        return self.make_api_request(
-            'listCompetitions',
-            utils.get_kwargs(locals()),
-            model=models.CompetitionResult,
-        )
+        result = self.network_client.invoke_sync(
+            self.exchange,
+            Endpoint.Betting,
+            LIST_COMPETITIONS,
+            utils.get_kwargs(locals()))
+        return utils.process_result(result, models.CompetitionResult)
+
 
     @utils.requires_login
     def list_time_ranges(self, filter, granularity):
@@ -147,86 +138,102 @@ class Betfair(object):
         :param TimeGranularity granularity:
 
         """
-        return self.make_api_request(
-            'listTimeRanges',
-            utils.get_kwargs(locals()),
-            model=models.TimeRangeResult,
-        )
+        result = self.network_client.invoke_sync(
+            self.exchange,
+            Endpoint.Betting,
+            LIST_TIME_RANGES,
+            utils.get_kwargs(locals()))
+        return utils.process_result(result, models.TimeRangeResult)
+
 
     @utils.requires_login
-    def list_events(self, filter, locale=None):
+    def list_events(self, filter={}, locale=None):
         """
 
         :param MarketFilter filter:
         :param str locale:
 
         """
-        return self.make_api_request(
-            'listEvents',
-            utils.get_kwargs(locals()),
-            model=models.EventResult,
-        )
+        result = self.network_client.invoke_sync(
+            self.exchange,
+            Endpoint.Betting,
+            LIST_EVENTS,
+            utils.get_kwargs(locals()))
+
+        return utils.process_result(result, models.EventResult)
+
 
     @utils.requires_login
-    def list_market_types(self, filter, locale=None):
+    def list_market_types(self, filter={}, locale=None):
         """
 
         :param MarketFilter filter:
         :param str locale:
 
         """
-        return self.make_api_request(
-            'listMarketTypes',
-            utils.get_kwargs(locals()),
-            model=models.MarketTypeResult,
-        )
+        result = self.network_client.invoke_sync(
+            self.exchange,
+            Endpoint.Betting,
+            LIST_MARKET_TYPES,
+            utils.get_kwargs(locals()))
+
+        return utils.process_result(result, models.MarketTypeResult)
+
 
     @utils.requires_login
-    def list_countries(self, filter, locale=None):
+    def list_countries(self, filter={}, locale=None):
         """
 
         :param MarketFilter filter:
         :param str locale:
 
         """
-        return self.make_api_request(
-            'listCountries',
-            utils.get_kwargs(locals()),
-            model=models.CountryCodeResult,
-        )
+        result = self.network_client.invoke_sync(
+            self.exchange,
+            Endpoint.Betting,
+            LIST_COUNTRIES,
+            utils.get_kwargs(locals()))
+
+        return utils.process_result(result, models.CountryCodeResult)
+
 
     @utils.requires_login
-    def list_venues(self, filter, locale=None):
+    def list_venues(self, filter={}, locale=None):
         """
 
         :param MarketFilter filter:
         :param str locale:
 
         """
-        return self.make_api_request(
-            'listCountries',
-            utils.get_kwargs(locals()),
-            model=models.VenueResult,
-        )
+        result = self.network_client.invoke_sync(
+            self.exchange,
+            Endpoint.Betting,
+            LIST_VENUES,
+            utils.get_kwargs(locals()))
+
+        return utils.process_result(result, models.VenueResult)
+
 
     @utils.requires_login
     def list_market_catalogue(
-            self, filter, max_results=100, market_projection=None, locale=None,
-            sort=None):
+        self, filter, market_projection=None, sort=None, max_results=10, locale=None):
         """
 
         :param MarketFilter filter:
-        :param int max_results:
         :param list market_projection:
         :param MarketSort sort:
+        :param int max_results:
         :param str locale:
 
         """
-        return self.make_api_request(
-            'listMarketCatalogue',
-            utils.get_kwargs(locals()),
-            model=models.MarketCatalogue,
-        )
+        result = self.network_client.invoke_sync(
+            self.exchange,
+            Endpoint.Betting,
+            LIST_MARKET_CATALOGUE,
+            utils.get_kwargs(locals()))
+
+        return utils.process_result(result, models.MarketCatalogue)
+
 
     @utils.requires_login
     def list_market_book(
@@ -242,16 +249,19 @@ class Betfair(object):
         :param str locale:
 
         """
-        return self.make_api_request(
-            'listMarketBook',
-            utils.get_kwargs(locals()),
-            model=models.MarketBook,
-        )
+        result = self.network_client.invoke_sync(
+            self.exchange,
+            Endpoint.Betting,
+            LIST_MARKET_BOOK,
+            utils.get_kwargs(locals()))
+
+        return utils.process_result(result, models.MarketBook)
+
 
     @utils.requires_login
     def list_market_profit_and_loss(
             self, market_ids, include_settled_bets=False,
-            include_bsp_bets=None, net_of_commission=None):
+            include_bsp_bets=False, net_of_commission=False):
         """Retrieve profit and loss for a given list of markets.
 
         :param list market_ids: List of markets to calculate profit and loss
@@ -262,14 +272,16 @@ class Betfair(object):
             tariffs
 
         """
-        return self.make_api_request(
-            'listMarketProfitAndLoss',
-            utils.get_kwargs(locals()),
-            model=models.MarketProfitAndLoss,
-        )
+        result = self.network_client.invoke_sync(
+            self.exchange,
+            Endpoint.Betting,
+            LIST_MARKET_PROFIT_AND_LOSS,
+            utils.get_kwargs(locals()))
+
+        return utils.process_result(result, models.MarketProfitAndLoss)
+
 
     # Chunked iterators for list methods
-
     def iter_list_market_book(self, market_ids, chunk_size, **kwargs):
         """Split call to `list_market_book` into separate requests.
 
@@ -301,8 +313,8 @@ class Betfair(object):
 
     @utils.requires_login
     def list_current_orders(
-            self, bet_ids, market_ids, order_projection, date_range, order_by,
-            sort_dir, from_record, record_count):
+            self, bet_ids = None, market_ids = None, order_projection = None, date_range = None, order_by = None,
+            sort_dir = None, from_record = None, record_count = None):
         """
 
         :param bet_ids:
@@ -315,17 +327,20 @@ class Betfair(object):
         :param record_count:
 
         """
-        return self.make_api_request(
-            'listCurrentOrders',
-            utils.get_kwargs(locals()),
-            model=models.CurrentOrderSummaryReport,
+        result = self.network_client.invoke_sync(
+            self.exchange,
+            Endpoint.Betting,
+            LIST_CURRENT_ORDERS,
+            utils.get_kwargs(locals())
         )
+        return utils.process_result(result, models.CurrentOrderSummaryReport)
+
 
     @utils.requires_login
     def list_cleared_orders(
-            self, bet_status, event_type_ids, event_ids, market_ids,
-            runner_ids, bet_ids, side, settled_date_range, group_by,
-            include_item_description, locale, from_record, record_count):
+            self, bet_status, event_type_ids=None, event_ids=None, market_ids=None,
+            runner_ids=None, bet_ids=None, side=None, settled_date_range=None, group_by=None,
+            include_item_description=None, locale=None, from_record=None, record_count=None):
         """
 
         :param bet_status:
@@ -343,11 +358,14 @@ class Betfair(object):
         :param record_count:
 
         """
-        return self.make_api_request(
-            'listClearedOrders',
-            utils.get_kwargs(locals()),
-            model=models.ClearedOrderSummaryReport,
-        )
+        result = self.network_client.invoke_sync(
+            self.exchange,
+            Endpoint.Betting,
+            LIST_CLEARED_ORDERS,
+            utils.get_kwargs(locals()))
+
+        return utils.process_result(result, models.ClearedOrderSummaryReport)
+
 
     @utils.requires_login
     def place_orders(self, market_id, instructions, customer_ref=None):
@@ -411,4 +429,3 @@ class Betfair(object):
             utils.get_kwargs(locals()),
             model=models.UpdateExecutionReport,
         )
-

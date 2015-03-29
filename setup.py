@@ -5,7 +5,6 @@ import re
 import sys
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
-from pip.req import parse_requirements
 
 
 TEST_REQUIRES = [
@@ -72,8 +71,7 @@ setup(
     package_dir={'betfair': 'betfair'},
     include_package_data=True,
     install_requires=[
-        str(requirement.req)
-        for requirement in parse_requirements('requirements.txt')
+        line.strip() for line in open('requirements.txt')
     ],
     license=read('LICENSE'),
     zip_safe=False,

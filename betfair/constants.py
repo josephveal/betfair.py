@@ -234,3 +234,40 @@ BetStatus = Enum(
         'CANCELLED',
     ]
 )
+
+Exchange = Enum(
+    "Exchange", [
+        "AUS",
+        "UK",
+    ]
+)
+
+Endpoint = Enum(
+    "Endpoint", [
+        "Betting",
+        "Account",
+    ]
+)
+
+LIST_COMPETITIONS = "SportsAPING/v1.0/listCompetitions"
+LIST_COUNTRIES = "SportsAPING/v1.0/listCountries"
+LIST_CURRENT_ORDERS = "SportsAPING/v1.0/listCurrentOrders"
+LIST_CLEARED_ORDERS = "SportsAPING/v1.0/listClearedOrders"
+LIST_EVENTS = "SportsAPING/v1.0/listEvents"
+LIST_EVENT_TYPES = "SportsAPING/v1.0/listEventTypes"
+LIST_MARKET_CATALOGUE = "SportsAPING/v1.0/listMarketCatalogue"
+LIST_MARKET_BOOK = "SportsAPING/v1.0/listMarketBook"
+LIST_MARKET_PROFIT_AND_LOSS = "SportsAPING/v1.0/listMarketProfitAndLoss"
+LIST_MARKET_TYPES = "SportsAPING/v1.0/listMarketTypes"
+LIST_TIME_RANGES = "SportsAPING/v1.0/listTimeRanges"
+LIST_VENUES = "SportsAPING/v1.0/listVenues"
+PLACE_ORDERS = "SportsAPING/v1.0/placeOrders"
+CANCEL_ORDERS = "SportsAPING/v1.0/cancelOrders"
+REPLACE_ORDERS = "SportsAPING/v1.0/replaceOrders"
+UPDATE_ORDERS = "SportsAPING/v1.0/updateOrders"
+
+GET_ACCOUNT_DETAILS = "AccountAPING/v1.0/getAccountDetails"
+GET_ACCOUNT_FUNDS = "AccountAPING/v1.0/getAccountFunds"
+GET_ACCOUNT_STATEMENT = "AccountAPING/v1.0/getAccountStatement"
+LIST_CURRENCY_RATES = "AccountAPING/v1.0/listCurrencyRates"
+TRANSFER_FUNDS = "AccountAPING/v1.0/transferFunds"

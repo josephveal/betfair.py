@@ -15,13 +15,13 @@ class EnumType(DataType):
         processed = self.preprocess(value)
         if isinstance(processed, self.type):
             return processed
+        if type(processed) == dict:
+            return self.type(**processed)
         try:
             return self.type[processed]
         except KeyError:
-            raise ValueError('Value {0} is not a member of Enum {1}'.format(
-                value,
-                self.type,
-            ))
+            pass
+        return self.type(processed)
 
 
 class ModelType(DataType):
@@ -31,7 +31,12 @@ class ModelType(DataType):
 
     def unserialize(self, value):
         value = self.preprocess(value)
-        return self.type(**value)
+        if self.type == type(value):
+            return value
+        else:
+            return self.type(**value)
+
+        #return self.type(**value)
 
 
 def preprocess_date(date):

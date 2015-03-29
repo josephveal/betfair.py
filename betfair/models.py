@@ -39,7 +39,7 @@ class MarketDescription(BetfairModel):
 
 
 class RunnerCatalog(BetfairModel):
-    selection_id = Field(DataType(float), required=True)
+    selection_id = Field(DataType(six.text_type), required=True)
     runner_name = Field(DataType(six.text_type), required=True)
     handicap = Field(DataType(float), required=True)
     sort_priority = Field(DataType(int), required=True)
@@ -69,8 +69,8 @@ class MarketCatalogue(BetfairModel):
 
 
 class TimeRange(BetfairModel):
-    from_ = Field(datetime_type)
-    to = Field(datetime_type)
+    from_ = Field(DataType(six.text_type))
+    to = Field(DataType(six.text_type))
 
 
 class MarketFilter(BetfairModel):
@@ -172,7 +172,7 @@ class MarketBook(BetfairModel):
 
 
 class RunnerProfitAndLoss(BetfairModel):
-    selection_id = Field(DataType(float))
+    selection_id = Field(DataType(six.text_type))
     if_win = Field(DataType(float))
     if_lose = Field(DataType(float))
 
@@ -193,7 +193,7 @@ class ExBestOffersOverrides(BetfairModel):
 
 class PriceProjection(BetfairModel):
     price_data = ListField(EnumType(constants.PriceData))
-    ex_best_offer_overrides = Field(ModelType(ExBestOffersOverrides))
+    ex_best_offers_overrides = Field(ModelType(ExBestOffersOverrides))
     virtualize = Field(DataType(bool))
     rollover_stakes = Field(DataType(bool))
 
@@ -259,7 +259,7 @@ class VenueResult(BetfairModel):
 
 class PlaceInstruction(BetfairModel):
     order_type = Field(EnumType(constants.OrderType), required=True)
-    selection_id = Field(DataType(float), required=True)
+    selection_id = Field(DataType(six.text_type), required=True)
     handicap = Field(DataType(float))
     side = Field(EnumType(constants.Side), required=True)
     limit_order = Field(ModelType(LimitOrder))
@@ -287,7 +287,7 @@ class UpdateInstruction(BetfairModel):
 class CurrentOrderSummary(BetfairModel):
     bet_id = Field(DataType(six.text_type), required=True)
     market_id = Field(DataType(six.text_type), required=True)
-    selection_id = Field(DataType(float), required=True)
+    selection_id = Field(DataType(six.text_type), required=True)
     handicap = Field(DataType(float), required=True)
     price_size = Field(DataType(PriceSize), required=True)
     bsp_liability = Field(DataType(float), required=True)
@@ -295,8 +295,8 @@ class CurrentOrderSummary(BetfairModel):
     status = Field(EnumType(constants.OrderStatus), required=True)
     persistence_type = Field(EnumType(constants.PersistenceType), required=True)
     order_type = Field(EnumType(constants.OrderType), required=True)
-    placed_date = Field(datetime_type, required=True)
-    matched_date = Field(datetime_type, required=True)
+    placed_date = Field(datetime_type)
+    matched_date = Field(datetime_type)
     average_price_matched = Field(DataType(float))
     size_matched = Field(DataType(float))
     size_remaining = Field(DataType(float))
@@ -308,7 +308,7 @@ class CurrentOrderSummary(BetfairModel):
 
 
 class CurrentOrderSummaryReport(BetfairModel):
-    current_orders = ListField(ModelType(CurrentOrderSummary), required=True)
+    current_orders = ListField(ModelType(CurrentOrderSummary), required=False)
     more_available = Field(DataType(bool), required=True)
 
 
@@ -328,8 +328,9 @@ class ClearedOrderSummary(BetfairModel):
     selection_id = Field(DataType(float))
     handicap = Field(DataType(float))
     bet_id = Field(DataType(six.text_type))
-    placed_data = Field(datetime_type)
-    persistence_type = Field(EnumType(constants.PersistenceType))
+    placed_date = Field(datetime_type)
+    persistence_type = Field(EnumType(constants.PersistenceType), required=True)
+    order_type = Field(EnumType(constants.OrderType), required=True)
     order_type = Field(EnumType(constants.OrderType))
     side = Field(EnumType(constants.Side))
     item_description = Field(ModelType(ItemDescription))
@@ -345,7 +346,7 @@ class ClearedOrderSummary(BetfairModel):
 
 
 class ClearedOrderSummaryReport(BetfairModel):
-    current_orders = ListField(ModelType(ClearedOrderSummary), required=True)
+    cleared_orders = ListField(ModelType(ClearedOrderSummary), required=True)
     more_available = Field(DataType(bool), required=True)
 
 
