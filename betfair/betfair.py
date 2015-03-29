@@ -377,11 +377,14 @@ class Betfair(object):
         :param str customer_ref: Optional order identifier string
 
         """
-        return self.make_api_request(
-            'placeOrders',
-            utils.get_kwargs(locals()),
-            model=models.PlaceExecutionReport,
-        )
+        result = self.network_client.invoke_sync(
+            self.exchange,
+            Endpoint.Betting,
+            PLACE_ORDERS,
+            utils.get_kwargs(locals()))
+
+        return utils.process_result(result, models.PlaceExecutionReport)
+
 
     @utils.requires_login
     def cancel_orders(self, market_id, instructions, customer_ref=None):
@@ -393,11 +396,14 @@ class Betfair(object):
         :param str customer_ref: Optional order identifier string
 
         """
-        return self.make_api_request(
-            'cancelOrders',
-            utils.get_kwargs(locals()),
-            model=models.CancelInstructionReport,
-        )
+        result = self.network_client.invoke_sync(
+            self.exchange,
+            Endpoint.Betting,
+            CANCEL_ORDERS,
+            utils.get_kwargs(locals()))
+
+        return utils.process_result(result, models.CancelExecutionReport)
+
 
     @utils.requires_login
     def replace_orders(self, market_id, instructions, customer_ref=None):

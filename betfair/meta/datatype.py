@@ -17,4 +17,6 @@ class DataType(object):
         processed = self.preprocess(value)
         if isinstance(processed, self.type):
             return processed
+        if type(processed) == dict:
+            return self.type(**processed)
         return self.type(processed)

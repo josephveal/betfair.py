@@ -28,8 +28,11 @@ class Network(object):
             # for enum objects
             if hasattr(obj, 'name'):
                 return obj.name
+            if hasattr(obj, 'serialize'):
+                return obj.serialize()
             else:
-                raise TypeError, "Object of type %s with value of %s is not JSON serializable"
+                raise TypeError, "Object of type %s is not JSON serializable" \
+                    % type(obj)
 
         json_resp = {
             "jsonrpc": "2.0",
