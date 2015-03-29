@@ -13,61 +13,22 @@ from . import exceptions
 from constants import *
 from network import Network
 
-
-IDENTITY_URL = 'https://identitysso.betfair.com/api/'
-API_URL = 'https://api.betfair.com/exchange/betting/json-rpc/v1/'
-
-
 class Betfair(object):
     """Betfair API client.
 
     :param str app_key: Optional application identifier
     :param str cert_file: Path to self-signed SSL certificate file(s); may be
         a *.pem file or a tuple of (*.crt, *.key) files
-    :param str content_type: Response type
 
     """
-    def __init__(self, app_key, cert_file, exchange, content_type='application/json'):
+    def __init__(self, app_key, cert_file, exchange):
         self.app_key = app_key
         self.cert_file = cert_file
         self.exchange = exchange
-        self.content_type = content_type
-        self.session = requests.Session()
-        self.session_token = None
         self.network_client = Network(app_key)
 
-    @property
-    def headers(self):
-        return {
-            'X-Application': self.app_key,
-            'X-Authentication': self.session_token,
-            'Content-Type': self.content_type,
-            'Accept': 'application/json',
-        }
-
-    def make_auth_request(self, method):
-        response = self.session.post(
-            os.path.join(IDENTITY_URL, method),
-            headers=self.headers,
-        )
-        utils.check_status_code(response)
-        data = response.json()
-        if data.get('status') != 'SUCCESS':
-            raise exceptions.BetfairAuthError(response, data)
-
-    def make_api_request(self, method, params, codes=None, model=None):
-        payload = utils.make_payload(method, params)
-        response = self.session.post(
-            API_URL,
-            data=json.dumps(payload),
-            headers=self.headers,
-        )
-        utils.check_status_code(response, codes=codes)
-        result = utils.result_or_error(response)
-        return utils.process_result(result, model)
 
     # Authentication methods
-
     def login(self, username, password):
         """Log in to Betfair. Sets `session_token` if successful.
 
@@ -76,7 +37,8 @@ class Betfair(object):
         :raises: BetfairLoginError
 
         """
-        self.session_token = self.network_client.login(username, password)
+        self.network_client.login(username, password)
+
 
     @utils.requires_login
     def keep_alive(self):
@@ -85,7 +47,8 @@ class Betfair(object):
         :raises: BetfairAuthError
 
         """
-        self.make_auth_request('keepAlive')
+        self.network_client.keep_alive()
+
 
     @utils.requires_login
     def logout(self):
@@ -94,11 +57,11 @@ class Betfair(object):
         :raises: BetfairAuthError
 
         """
-        self.make_auth_request('logout')
-        self.session_token = None
+        self.network_client.logout()
+        self.network_client.session_token = None
+
 
     # Bet query methods
-
     @utils.requires_login
     def list_event_types(self, filter={}, locale=None):
         """
@@ -113,6 +76,7 @@ class Betfair(object):
             LIST_EVENT_TYPES,
             utils.get_kwargs(locals()))
         return utils.process_result(result, models.EventTypeResult)
+
 
     @utils.requires_login
     def list_competitions(self, filter={}, locale=None):
@@ -415,11 +379,14 @@ class Betfair(object):
         :param str customer_ref: Optional order identifier string
 
         """
-        return self.make_api_request(
-            'replaceOrders',
-            utils.get_kwargs(locals()),
-            model=models.ReplaceExecutionReport,
-        )
+        result = self.network_client.invoke_sync(
+            self.exchange,
+            Endpoint.Betting,
+            REPLACE_ORDERS,
+            utils.get_kwargs(locals()))
+
+        return utils.process_result(result, models.ReplaceExecutionReport)
+
 
     @utils.requires_login
     def update_orders(self, market_id, instructions, customer_ref=None):
@@ -430,8 +397,10 @@ class Betfair(object):
         :param str customer_ref: Optional order identifier string
 
         """
-        return self.make_api_request(
-            'updateOrders',
-            utils.get_kwargs(locals()),
-            model=models.UpdateExecutionReport,
-        )
+        result = self.network_client.invoke_sync(
+            self.exchange,
+            Endpoint.Betting,
+            UPDATE_ORDERS,
+            utils.get_kwargs(locals()))
+
+        return utils.process_result(result, models.UpdateExecutionReport)

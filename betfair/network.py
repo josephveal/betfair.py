@@ -145,6 +145,31 @@ class Network(object):
         self.logger.debug("network login success" + self.session_token)
         return self.session_token
 
+
+    def __identity_request(self, method):
+        self.logger.debug("network.__identity_request")
+        response = requests.post(
+            url="https://identitysso.betfair.com/api/" + method,
+            headers={
+                "X-Application": self.app_key,
+                "X-Authentication": self.session_token,
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Accept": "application/json"}
+        )
+        utils.check_status_code(response)
+        data = response.json()
+        if data.get('status') != 'SUCCESS':
+            raise exceptions.BetfairAuthError(response, data)
+
+
+    def keep_alive(self):
+        self.__identity_request("keepAlive")
+
+
+    def logout(self):
+        self.__identity_request("logout")
+
+
     def logged_in(self):
         if self.session_token is not "":
             return True
