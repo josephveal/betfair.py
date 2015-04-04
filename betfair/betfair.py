@@ -404,3 +404,19 @@ class Betfair(object):
             utils.get_kwargs(locals()))
 
         return utils.process_result(result, models.UpdateExecutionReport)
+
+
+    # account api
+    @utils.requires_login
+    def get_account_funds(self, wallet=None):
+        """Get the current funds in an account
+        """
+        result = self.network_client.invoke_sync(
+            self.exchange,
+            Endpoint.Account,
+            GET_ACCOUNT_FUNDS,
+            utils.get_kwargs(locals()))
+
+        return utils.process_result(result, models.AccountFundsResponse)
+
+

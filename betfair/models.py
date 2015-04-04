@@ -403,3 +403,14 @@ class ReplaceExecutionReport(BaseExecutionReport):
 
 class UpdateExecutionReport(BaseExecutionReport):
     instruction_reports = ListField(ModelType(UpdateInstructionReport))
+
+# Accounts
+
+class AccountFundsResponse(BetfairModel):
+    available_to_bet_balance = Field(DataType(float))
+    exposure = Field(DataType(float))
+    retained_commission = Field(DataType(float))
+    exposure_limit = Field(DataType(float))
+    discount_rate = Field(DataType(float))
+    points_balance = Field(DataType(int))
+    wallet = Field(EnumType(constants.Wallet))

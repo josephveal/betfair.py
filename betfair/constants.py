@@ -249,6 +249,13 @@ Endpoint = Enum(
     ]
 )
 
+Wallet = Enum(
+    "Wallet", [
+        "UK",
+        "AUSTRALIAN",
+    ]
+)
+
 LIST_COMPETITIONS = "SportsAPING/v1.0/listCompetitions"
 LIST_COUNTRIES = "SportsAPING/v1.0/listCountries"
 LIST_CURRENT_ORDERS = "SportsAPING/v1.0/listCurrentOrders"
