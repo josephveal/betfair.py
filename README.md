@@ -5,8 +5,6 @@ api's for both the UK and Australian wallets.
 Installation
 ------------
 
-::
-
     $ python setup.py install
 
 Requirements
