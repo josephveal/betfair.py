@@ -66,14 +66,13 @@ List next ten horse racing markets:
     # login
     # ...
 
-    date_from = datetime.datetime.now().isoformat()
-    date_to = (datetime.datetime.now() + datetime.timedelta(days=1)).isoformat()
-    time_range = TimeRange(from_=date_from, to=date_to)
-    market_filter = MarketFilter(
-        event_type_ids=["7"], market_start_time=time_range, market_type_codes=["WIN"])
-    
+    f = datetime.datetime.now().isoformat()
+    t = (datetime.datetime.now() + datetime.timedelta(days=1)).isoformat()
+    time_range = TimeRange(from_=f, to=t)
+    market_filter = MarketFilter(event_type_ids=["7"], market_start_time=time_range, market_type_codes=["WIN"])
+
     catalogue_list = client.list_market_catalogue(
-        horse_race_projection(), max_results=10)
+        market_filter, horse_race_projection(), max_results=10)
 
     for catalogue in catalogue_list:
         print "%s %s" % (catalogue.market_id, catalogue.market_name)
