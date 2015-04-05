@@ -451,3 +451,14 @@ class Betfair(object):
 
         return utils.process_result(result, models.AccountDetailsResponse)
 
+    @utils.requires_login
+    def list_currency_rates(self, from_currency=None):
+        """Returns a list of currency rates based on a given currency
+        """
+        result = self.network_client.invoke_sync(
+            self.exchange,
+            Endpoint.Account,
+            LIST_CURRENCY_RATES,
+            utils.get_kwargs(locals()))
+
+        return utils.process_result(result, models.CurrencyRate)

@@ -459,3 +459,8 @@ class AccountDetailsResponse(BetfairModel):
     points_balance = Field(DataType(int))
     country_code = Field(DataType(six.text_type))
 
+
+class CurrencyRate(BetfairModel):
+    currency_code = Field(DataType(six.text_type))
+    rate = Field(DataType(float))
+
