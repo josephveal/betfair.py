@@ -5,3 +5,4 @@ requests
 decorator
 inflection
 python-dateutil
+twisted
