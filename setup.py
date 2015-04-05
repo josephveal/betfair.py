@@ -63,10 +63,9 @@ setup(
     version=__version__,
     description='Python client for the Betfair API '
                 '(https://api.developer.betfair.com/)',
-    long_description=open('README.rst').read(),
-    author='Joshua Carp',
-    author_email='jm.carp@gmail.com',
-    url='https://github.com/jmcarp/betfair.py',
+    long_description=open('README.md').read(),
+    author='Joel Pobar',
+    url='https://github.com/joelpob/betfair.py',
     packages=find_packages(exclude=('test*', )),
     package_dir={'betfair': 'betfair'},
     include_package_data=True,
