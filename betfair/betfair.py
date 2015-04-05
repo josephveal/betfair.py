@@ -439,3 +439,15 @@ class Betfair(object):
 
         return utils.process_result(result, models.AccountStatementReport)
 
+    @utils.requires_login
+    def get_account_details(self):
+        """Get the account details
+        """
+        result = self.network_client.invoke_sync(
+            self.exchange,
+            Endpoint.Account,
+            GET_ACCOUNT_DETAILS,
+            utils.get_kwargs(locals()))
+
+        return utils.process_result(result, models.AccountDetailsResponse)
+

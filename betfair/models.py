@@ -448,5 +448,14 @@ class AccountStatementReport(BetfairModel):
     account_statement = ListField(ModelType(StatementItem))
     more_available = Field(DataType(bool))
 
-
+class AccountDetailsResponse(BetfairModel):
+    currency_code = Field(DataType(six.text_type))
+    first_name = Field(DataType(six.text_type))
+    last_name = Field(DataType(six.text_type))
+    locale_code = Field(DataType(six.text_type))
+    region = Field(DataType(six.text_type))
+    timezone = Field(DataType(six.text_type))
+    discount_rate = Field(DataType(float))
+    points_balance = Field(DataType(int))
+    country_code = Field(DataType(six.text_type))
 
