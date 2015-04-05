@@ -69,7 +69,8 @@ List next ten horse racing markets:
     f = datetime.datetime.now().isoformat()
     t = (datetime.datetime.now() + datetime.timedelta(days=1)).isoformat()
     time_range = TimeRange(from_=f, to=t)
-    market_filter = MarketFilter(event_type_ids=["7"], market_start_time=time_range, market_type_codes=["WIN"])
+    market_filter = MarketFilter(
+        event_type_ids=["7"], market_start_time=time_range, market_type_codes=["WIN"])
 
     catalogue_list = client.list_market_catalogue(
         market_filter, horse_race_projection(), max_results=10)
@@ -96,7 +97,8 @@ Bet on a horse:
     place_execution_report = client.place_orders(market_id, [place_instructions])
 
     bet = place_execution_report.instruction_reports[0]
-    print "%s %s %s" % (str(bet.bet_id), str(bet.average_price_matched), str(bet.size_matched))
+    print "%s %s %s" % \
+        (str(bet.bet_id), str(bet.average_price_matched), str(bet.size_matched))
 ```
 
 Get Betfair account balance: 
