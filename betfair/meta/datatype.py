@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 class DataType(object):
 
     def __init__(self, type, preprocessor=None):

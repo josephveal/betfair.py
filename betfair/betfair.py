@@ -419,4 +419,23 @@ class Betfair(object):
 
         return utils.process_result(result, models.AccountFundsResponse)
 
+    @utils.requires_login
+    def get_account_statement(self, locale=None, from_record=None, record_count=None,
+            item_date_range=None, include_item=None, wallet=None):
+        """Get the account statement
+
+        :param str locale: the language to be used
+        :param int from_record: specifies the first record to be returned
+        :param int record_count: the maximum number of records to be returned
+        :param TimeRange item_date_range: return items within this time range
+        :param IncludeItem include_item: which items to include
+        :param Wallet wallet: specify which wallet
+        """
+        result = self.network_client.invoke_sync(
+            self.exchange,
+            Endpoint.Account,
+            GET_ACCOUNT_STATEMENT,
+            utils.get_kwargs(locals()))
+
+        return utils.process_result(result, models.AccountStatementReport)
 

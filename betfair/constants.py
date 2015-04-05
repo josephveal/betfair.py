@@ -256,6 +256,21 @@ Wallet = Enum(
     ]
 )
 
+IncludeItem = Enum(
+    "IncludeItem", [
+        "ALL",
+        "DEPOSITS_WITHDRAWALS",
+        "EXCHANGE",
+        "POKER_ROOM",
+    ]
+)
+
+ItemClass = Enum(
+    "ItemClass", [
+        "UNKNOWN",
+    ]
+)
+
 LIST_COMPETITIONS = "SportsAPING/v1.0/listCompetitions"
 LIST_COUNTRIES = "SportsAPING/v1.0/listCountries"
 LIST_CURRENT_ORDERS = "SportsAPING/v1.0/listCurrentOrders"

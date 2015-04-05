@@ -414,3 +414,39 @@ class AccountFundsResponse(BetfairModel):
     discount_rate = Field(DataType(float))
     points_balance = Field(DataType(int))
     wallet = Field(EnumType(constants.Wallet))
+
+class StatementLegacyData(BetfairModel):
+    avg_price = Field(DataType(float))
+    bet_size = Field(DataType(float))
+    bet_type = Field(DataType(six.text_type))
+    bet_category_type = Field(DataType(six.text_type))
+    commission_rate = Field(DataType(six.text_type))
+    event_id = Field(DataType(long))
+    event_type_id = Field(DataType(long))
+    full_market_name = Field(DataType(six.text_type))
+    gross_bet_amount = Field(DataType(float))
+    market_name = Field(DataType(six.text_type))
+    market_type = Field(DataType(six.text_type))
+    placed_date = Field(datetime_type)
+    selection_id = Field(DataType(long))
+    selection_name = Field(DataType(six.text_type))
+    start_date = Field(datetime_type)
+    transaction_type = Field(DataType(six.text_type))
+    transaction_id = Field(DataType(long))
+    win_lose = Field(DataType(six.text_type))
+
+class StatementItem(BetfairModel):
+    ref_id = Field(DataType(six.text_type))
+    item_date = Field(datetime_type)
+    amount = Field(DataType(float))
+    balance = Field(DataType(float))
+    item_class = Field(EnumType(constants.ItemClass))
+    item_class_data = Field(DataType(dict))
+    legacy_data = Field(ModelType(StatementLegacyData))
+
+class AccountStatementReport(BetfairModel):
+    account_statement = ListField(ModelType(StatementItem))
+    more_available = Field(DataType(bool))
+
+
+
