@@ -462,3 +462,19 @@ class Betfair(object):
             utils.get_kwargs(locals()))
 
         return utils.process_result(result, models.CurrencyRate)
+
+    @utils.requires_login
+    def transfer_funds(self, from_, to, amount):
+        """Transfers funds between UK and Australian Exchange wallets
+
+        :param Wallet from_: source wallet
+        :param Wallet to: desination wallet
+        :param float amount: amount to transfer
+        """
+        result = self.network_client.invoke_sync(
+            self.exchange,
+            Endpoint.Account,
+            TRANSFER_FUNDS,
+            utils.get_kwargs(locals()))
+
+        return utils.process_result(result, models.TransferResponse)

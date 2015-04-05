@@ -464,3 +464,6 @@ class CurrencyRate(BetfairModel):
     currency_code = Field(DataType(six.text_type))
     rate = Field(DataType(float))
 
+class TransferResponse(BetfairModel):
+    transaction_id = Field(DataType(six.text_type))
+
