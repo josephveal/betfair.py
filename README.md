@@ -7,19 +7,12 @@ Installation
 
 ::
 
-    $ pip install betfair.py
+    $ python setup.py install
 
 Requirements
 ------------
 
 - Python >= 2.7 or >= 3.3
-
-Testing
--------
-
-To run tests ::
-
-    $ py.test
 
 SSL Certificates
 ----------------
@@ -111,7 +104,8 @@ Get Betfair account balance:
 Author
 ------
 
-Forked from: github.com/jmcarp/betfair.py Joshua Carp (jmcarp)
+Forked from: github.com/jmcarp/betfair.py Joshua Carp (jmcarp)  
+
 Joel Pobar
 
 License
