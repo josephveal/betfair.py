@@ -20,6 +20,8 @@ class Betfair(object):
     :param str cert_file: Path to self-signed SSL certificate file(s); may be
         a *.pem file or a tuple of (*.crt, *.key) files
 
+
+    JCV - I think we use exchange to specify Australian. Can leave balnk otherwise.
     """
     def __init__(self, app_key, cert_file, exchange):
         self.app_key = app_key
@@ -39,7 +41,7 @@ class Betfair(object):
         """
         self.network_client.login(username, password)
 
-
+  
     @utils.requires_login
     def keep_alive(self):
         """Reset session timeout.

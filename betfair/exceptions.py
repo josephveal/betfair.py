@@ -15,9 +15,9 @@ class BetfairLoginError(BetfairError):
 
 class BetfairAuthError(BetfairError):
 
-    def __init__(self, response, data):
-        self.response = response
-        self.message = data.get('error', 'UNKNOWN')
+    def __init__(self, data): #removed ,response CHANGE
+        #self.response = response CHANGE
+        self.message = data.get('loginStatus', 'UNKNOWN')
         super(BetfairAuthError, self).__init__(self.message)
 
 
